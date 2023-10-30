@@ -9,3 +9,111 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id             String     @unique @default(uuid())
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  email          String     @unique
+  hashedPassword String
+  nickName       String?
+  description    String?
+  reviews        Review[]
+  favorites      Favorite[]
+}
+
+model Factory {
+  id                            String                          @unique @default(uuid())
+  createdAt                     DateTime                        @default(now())
+  updatedAt                     DateTime                        @updatedAt
+  zipcode                       String
+  prefecture                    String
+  city                          String
+  tel                           String?
+  bisinessHours                 String?
+  holidays                      String?
+  siteUrl                       String?
+  imageUrl                      String[]                        @default([])
+  reviews                       Review[]
+  favoritedBy                   Favorite[]
+  regionId                      String?
+  region                        Region?                         @relation(fields: [regionId], references: [id])
+  genres                        GenreToFactory[]
+  purposes                      PurposeToFactory[]
+  factoryToAccessibilityFeature FactoryToAccessibilityFeature[]
+}
+
+model Region {
+  id        String    @unique @default(uuid())
+  name      String // 地域名
+  factories Factory[]
+}
+
+model Genre {
+  id        String           @unique @default(uuid())
+  name      String // ジャンル名
+  factories GenreToFactory[]
+}
+
+model Purpose {
+  id        String             @unique @default(uuid())
+  name      String // 目的名
+  factories PurposeToFactory[]
+}
+
+model AccessibilityFeature {
+  id        String                          @unique @default(uuid())
+  name      String // バリアフリーの特徴名
+  factories FactoryToAccessibilityFeature[]
+}
+
+// 中間テーブル
+model GenreToFactory {
+  genreId   String
+  genre     Genre   @relation(fields: [genreId], references: [id])
+  factoryId String
+  factory   Factory @relation(fields: [factoryId], references: [id])
+
+  @@id([genreId, factoryId])
+}
+
+// 中間テーブル
+model PurposeToFactory {
+  purposeId String
+  purpose   Purpose @relation(fields: [purposeId], references: [id])
+  factoryId String
+  factory   Factory @relation(fields: [factoryId], references: [id])
+
+  @@id([purposeId, factoryId])
+}
+
+// 中間テーブル
+model FactoryToAccessibilityFeature {
+  featureId String
+  feature   AccessibilityFeature @relation(fields: [featureId], references: [id])
+  factoryId String
+  factory   Factory              @relation(fields: [factoryId], references: [id])
+
+  @@id([featureId, factoryId])
+}
+
+model Favorite {
+  userId    String
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  factoryId String
+  factory   Factory @relation(fields: [factoryId], references: [id], onDelete: Cascade)
+
+  @@id([userId, factoryId])
+}
+
+model Review {
+  id        String   @unique @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  title     String
+  comment   String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  factoryId String?
+  factory   Factory? @relation(fields: [factoryId], references: [id])
+}
