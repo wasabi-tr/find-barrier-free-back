@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { AuthDto } from './dto/auth.dto';
 import * as bcrypt from 'bcrypt';
 import { Prisma } from '@prisma/client';
-import { Msg } from './interfaces/auth.interface';
+import { Jwt, Msg } from './interfaces/auth.interface';
 @Injectable()
 export class AuthService {
   constructor(
@@ -33,5 +33,31 @@ export class AuthService {
         throw error;
       }
     }
+  }
+  async login(dto: AuthDto): Promise<Jwt> {
+    const user = await this.prisma.user.findUnique({
+      //既存のuserテーブルに送信されたemailと同じemailがないか検索する
+      where: {
+        email: dto.email,
+      },
+    });
+    if (!user) throw new ForbiddenException('Email or password incorrect');
+    const isValid = await bcrypt.compare(dto.password, user.hashedPassword); //入力された平文のpassとDBにあるhasedのpassを比較する
+    if (!isValid) throw new ForbiddenException('Email or password incorrect');
+    return this.generateJwt(user.id, user.email);
+  }
+  async generateJwt(userId: string, email: string): Promise<Jwt> {
+    const payload = {
+      sub: userId,
+      email,
+    };
+    const secret = this.config.get('JWT_SECRET');
+    const token = await this.jwt.signAsync(payload, {
+      expiresIn: '5m',
+      secret: secret,
+    });
+    return {
+      accessToken: token,
+    };
   }
 }
