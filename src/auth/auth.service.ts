@@ -35,8 +35,8 @@ export class AuthService {
     }
   }
   async login(dto: AuthDto): Promise<Jwt> {
+    //既存のuserテーブルに送信されたemailと同じemailがないか検索する
     const user = await this.prisma.user.findUnique({
-      //既存のuserテーブルに送信されたemailと同じemailがないか検索する
       where: {
         email: dto.email,
       },
@@ -46,6 +46,7 @@ export class AuthService {
     if (!isValid) throw new ForbiddenException('Email or password incorrect');
     return this.generateJwt(user.id, user.email);
   }
+
   async generateJwt(userId: string, email: string): Promise<Jwt> {
     const payload = {
       sub: userId,
