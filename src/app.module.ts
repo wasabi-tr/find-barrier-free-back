@@ -5,6 +5,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
+import { FactoryModule } from './factory/factory.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { UserModule } from './user/user.module';
       isGlobal: true,
     }),
     AuthModule,
+    FactoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

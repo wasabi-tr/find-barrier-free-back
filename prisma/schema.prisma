@@ -26,39 +26,26 @@ model Factory {
   id                            String                          @unique @default(uuid())
   createdAt                     DateTime                        @default(now())
   updatedAt                     DateTime                        @updatedAt
+  name                          String
   zipcode                       String
   prefecture                    String
   city                          String
+  addressDetail                 String
   tel                           String?
-  bisinessHours                 String?
+  businessHours                 String?
   holidays                      String?
   siteUrl                       String?
   imageUrl                      String[]                        @default([])
   reviews                       Review[]
   favoritedBy                   Favorite[]
-  regionId                      String?
-  region                        Region?                         @relation(fields: [regionId], references: [id])
   genres                        GenreToFactory[]
-  purposes                      PurposeToFactory[]
   factoryToAccessibilityFeature FactoryToAccessibilityFeature[]
-}
-
-model Region {
-  id        String    @unique @default(uuid())
-  name      String // 地域名
-  factories Factory[]
 }
 
 model Genre {
   id        String           @unique @default(uuid())
   name      String // ジャンル名
   factories GenreToFactory[]
-}
-
-model Purpose {
-  id        String             @unique @default(uuid())
-  name      String // 目的名
-  factories PurposeToFactory[]
 }
 
 model AccessibilityFeature {
@@ -70,29 +57,19 @@ model AccessibilityFeature {
 // 中間テーブル
 model GenreToFactory {
   genreId   String
-  genre     Genre   @relation(fields: [genreId], references: [id])
+  genre     Genre   @relation(fields: [genreId], references: [id], onDelete: Cascade)
   factoryId String
-  factory   Factory @relation(fields: [factoryId], references: [id])
+  factory   Factory @relation(fields: [factoryId], references: [id], onDelete: Cascade)
 
   @@id([genreId, factoryId])
 }
 
 // 中間テーブル
-model PurposeToFactory {
-  purposeId String
-  purpose   Purpose @relation(fields: [purposeId], references: [id])
-  factoryId String
-  factory   Factory @relation(fields: [factoryId], references: [id])
-
-  @@id([purposeId, factoryId])
-}
-
-// 中間テーブル
 model FactoryToAccessibilityFeature {
   featureId String
-  feature   AccessibilityFeature @relation(fields: [featureId], references: [id])
+  feature   AccessibilityFeature @relation(fields: [featureId], references: [id], onDelete: Cascade)
   factoryId String
-  factory   Factory              @relation(fields: [factoryId], references: [id])
+  factory   Factory              @relation(fields: [factoryId], references: [id], onDelete: Cascade)
 
   @@id([featureId, factoryId])
 }
