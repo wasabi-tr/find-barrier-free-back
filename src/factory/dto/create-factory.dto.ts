@@ -24,6 +24,10 @@ export class CreateFactoryDto {
   @IsString()
   city: string;
 
+  @IsNotEmpty()
+  @IsString()
+  addressDetail: string;
+
   @IsOptional()
   @IsString()
   tel?: string;
@@ -50,5 +54,5 @@ export class CreateFactoryDto {
 
   @IsOptional()
   @IsArray()
-  factoryToAccessibilityFeatureIds?: string[];
+  featureIds?: string[];
 }

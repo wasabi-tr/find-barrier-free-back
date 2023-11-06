@@ -30,6 +30,7 @@ model Factory {
   zipcode                       String
   prefecture                    String
   city                          String
+  addressDetail                 String
   tel                           String?
   businessHours                 String?
   holidays                      String?
@@ -37,16 +38,8 @@ model Factory {
   imageUrl                      String[]                        @default([])
   reviews                       Review[]
   favoritedBy                   Favorite[]
-  regionId                      String?
-  region                        Region?                         @relation(fields: [regionId], references: [id])
   genres                        GenreToFactory[]
   factoryToAccessibilityFeature FactoryToAccessibilityFeature[]
-}
-
-model Region {
-  id        String    @unique @default(uuid())
-  name      String // 地域名
-  factories Factory[]
 }
 
 model Genre {

@@ -21,6 +21,10 @@ export class FactoryController {
   ): Promise<Factory> {
     const factory = await this.factoryService.createFactory(dto);
     await this.factoryService.createGenreToFactory(factory.id, dto.genresIds);
+    await this.factoryService.createAccessibilityToFactory(
+      factory.id,
+      dto.featureIds,
+    );
     return factory;
   }
 }
