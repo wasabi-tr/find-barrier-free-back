@@ -31,6 +31,8 @@ model Factory {
   prefecture                    String
   city                          String
   addressDetail                 String
+  lat                           Float
+  lng                           Float
   tel                           String?
   businessHours                 String?
   holidays                      String?
