@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { FactoryModule } from './factory/factory.module';
+import { ReviewModule } from './review/review.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { FactoryModule } from './factory/factory.module';
     }),
     AuthModule,
     FactoryModule,
+    ReviewModule,
   ],
   controllers: [AppController],
   providers: [AppService],
