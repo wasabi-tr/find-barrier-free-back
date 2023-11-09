@@ -18,6 +18,7 @@ model User {
   hashedPassword String
   nickName       String?
   description    String?
+  avatarUrl      String?
   reviews        Review[]
   favorites      Favorite[]
 }
@@ -92,7 +93,8 @@ model Review {
   title     String
   comment   String
   userId    String
+  imageUrl  String[] @default([])
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  factoryId String?
-  factory   Factory? @relation(fields: [factoryId], references: [id])
+  factoryId String
+  factory   Factory  @relation(fields: [factoryId], references: [id])
 }
