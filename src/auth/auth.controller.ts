@@ -36,7 +36,7 @@ export class AuthController {
     //サーバーサイドからjwtをcookieに設定する
     res.cookie('access_token', jwt.accessToken, {
       httpOnly: true,
-      secure: false, // 本番環境ではtrue
+      secure: true, // 本番環境ではtrue
       sameSite: 'none',
       path: '/',
     });
@@ -46,12 +46,12 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('/logout')
   async logout(
-    @Body() dto: AuthDto,
+    @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ): Promise<Msg> {
     res.cookie('access_token', '', {
       httpOnly: true,
-      secure: false, // 本番環境ではtrue
+      secure: true, // 本番環境ではtrue
       sameSite: 'none',
       path: '/',
     });
