@@ -4,6 +4,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateFactoryDto } from './dto/create-factory.dto';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
+import { UpdateFactoryDto } from './dto/update-factory.dto';
 
 @Injectable()
 export class FactoryService {
@@ -36,7 +37,24 @@ export class FactoryService {
     });
     return factory;
   }
-
+  async updateFactory(dto: UpdateFactoryDto): Promise<Factory> {
+    const factory = await this.prisma.factory.update({
+      where: { id: dto.id },
+      data: {
+        name: dto.name,
+        zipcode: dto.zipcode,
+        prefecture: dto.prefecture,
+        city: dto.city,
+        addressDetail: dto.addressDetail,
+        tel: dto.tel,
+        businessHours: dto.businessHours,
+        holidays: dto.holidays,
+        siteUrl: dto.siteUrl,
+        imageUrl: dto.imageUrl,
+      },
+    });
+    return factory;
+  }
   async getLocation(address: string) {
     const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${this.config.get(
       'GEOCODING_API_KEY',
