@@ -15,7 +15,9 @@ export class FactoryService {
   async getFactories(): Promise<Factory[]> {
     return this.prisma.factory.findMany();
   }
-
+  async getFactory(id: string): Promise<Factory> {
+    return this.prisma.factory.findUnique({ where: { id } });
+  }
   async createFactory(dto: CreateFactoryDto): Promise<Factory> {
     const address = `${dto.prefecture}${dto.city}${dto.addressDetail}`;
     const location = await this.getLocation(address);
@@ -54,6 +56,9 @@ export class FactoryService {
       },
     });
     return factory;
+  }
+  async deleteFactory(id: string) {
+    return this.prisma.factory.delete({ where: { id } });
   }
   async getLocation(address: string) {
     const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${this.config.get(

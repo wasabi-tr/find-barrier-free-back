@@ -1,9 +1,13 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  Param,
+  ParseUUIDPipe,
   Patch,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -17,8 +21,17 @@ import { UpdateFactoryDto } from './dto/update-factory.dto';
 @Controller('factory')
 export class FactoryController {
   constructor(private readonly factoryService: FactoryService) {}
+
+  @Get(':id')
+  getFactory(@Param('id', ParseUUIDPipe) id: string): Promise<Factory> {
+    console.log('getFactory');
+
+    return this.factoryService.getFactory(id);
+  }
+
   @Get()
   getFactories(): Promise<Factory[]> {
+    console.log('getFactories');
     return this.factoryService.getFactories();
   }
 
@@ -38,5 +51,12 @@ export class FactoryController {
   async updateFactory(@Body() dto: UpdateFactoryDto): Promise<Factory> {
     const factory = await this.factoryService.updateFactory(dto);
     return factory;
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Delete()
+  async deleteFactory(@Body() id: string): Promise<Factory> {
+    const deletedFactory = await this.factoryService.deleteFactory(id);
+    return deletedFactory;
   }
 }
