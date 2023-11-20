@@ -1,36 +1,31 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
+import { passportJwtSecret } from 'jwks-rsa';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
-  constructor(
-    private readonly config: ConfigService,
-    private readonly prisma: PrismaService,
-  ) {
+export class JwtStrategy extends PassportStrategy(Strategy) {
+  constructor(private configService: ConfigService) {
     super({
-      jwtFromRequest: ExtractJwt.fromExtractors([
-        (req) => {
-          let jwt = null;
-          if (req && req.cookies) {
-            jwt = req.cookies['access_token'];
-          }
-          return jwt;
-        },
-      ]),
-      ignoreExpiration: false,
-      secretOrKey: config.get('JWT_SECRET'),
+      secretOrKeyProvider: passportJwtSecret({
+        cache: true,
+        rateLimit: true,
+        jwksRequestsPerMinute: 5,
+        jwksUri: `${configService.get('JWT_SECRET')}/.well-known/jwks.json`,
+      }),
+
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      issuer: `${configService.get('JWT_SECRET')}`,
+      algorithms: ['RS256'],
     });
+    console.log('JwtStrategy initialized');
   }
-  async validate(payload: { sub: string; email: string }) {
-    const user = await this.prisma.user.findUnique({
-      where: {
-        id: payload.sub,
-      },
-    });
-    delete user.hashedPassword;
-    return user;
+
+  validate(payload: unknown): unknown {
+    // This one is really useful to check the jwt payload!
+    // console.log('Validating payload:', payload);
+    return payload;
   }
 }

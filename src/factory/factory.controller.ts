@@ -15,8 +15,9 @@ import { Factory } from '@prisma/client';
 import { FactoryService } from './factory.service';
 import { Request } from 'express';
 import { CreateFactoryDto } from './dto/create-factory.dto';
-import { AuthGuard } from '@nestjs/passport';
+// import { AuthGuard } from '@nestjs/passport';
 import { UpdateFactoryDto } from './dto/update-factory.dto';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('factory')
 export class FactoryController {
@@ -35,7 +36,7 @@ export class FactoryController {
     return this.factoryService.getFactories();
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard)
   @Post()
   async createFactory(
     @Req() req: Request,
@@ -46,14 +47,14 @@ export class FactoryController {
     return factory;
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard)
   @Patch()
   async updateFactory(@Body() dto: UpdateFactoryDto): Promise<Factory> {
     const factory = await this.factoryService.updateFactory(dto);
     return factory;
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard)
   @Delete()
   async deleteFactory(@Body() id: string): Promise<Factory> {
     const deletedFactory = await this.factoryService.deleteFactory(id);
