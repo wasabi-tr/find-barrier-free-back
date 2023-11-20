@@ -37,6 +37,8 @@
     "class-validator": "^0.14.0",
     "cookie-parser": "^1.4.6",
     "csurf": "^1.11.0",
+    "jwks-rsa": "^3.1.0",
+    "next-auth": "^4.24.5",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
     "prisma": "^5.5.2",
