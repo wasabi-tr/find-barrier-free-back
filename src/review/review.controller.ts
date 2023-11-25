@@ -5,6 +5,8 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Param,
+  ParseUUIDPipe,
   Patch,
   Post,
   Req,
@@ -26,6 +28,13 @@ export class ReviewController {
   @Get()
   getReviews(): Promise<Review[]> {
     return this.reviewService.getReviews();
+  }
+
+  @Get(':factoryId')
+  getReviewsByFactoryId(
+    @Param('factoryId', ParseUUIDPipe) factoryId: string,
+  ): Promise<Review[]> {
+    return this.reviewService.getReviewsByFactoryId(factoryId);
   }
 
   @HttpCode(HttpStatus.OK)

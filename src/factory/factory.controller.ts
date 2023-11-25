@@ -11,7 +11,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { Factory } from '@prisma/client';
+import { Factory, Feature, Genre } from '@prisma/client';
 import { FactoryService } from './factory.service';
 import { Request } from 'express';
 import { CreateFactoryDto } from './dto/create-factory.dto';
@@ -22,6 +22,18 @@ import { AuthGuard } from 'src/auth/auth.guard';
 @Controller('factory')
 export class FactoryController {
   constructor(private readonly factoryService: FactoryService) {}
+
+  @Get('/genres')
+  getAllGenres(): Promise<Genre[]> {
+    console.log('getFactoryGenres');
+    return this.factoryService.getAllGenres();
+  }
+
+  @Get('/features')
+  getAllFeature(): Promise<Genre[]> {
+    console.log('getFactoryAccessibility');
+    return this.factoryService.getAllFeature();
+  }
 
   @Get(':id')
   getFactory(@Param('id', ParseUUIDPipe) id: string): Promise<Factory> {
@@ -59,5 +71,20 @@ export class FactoryController {
   async deleteFactory(@Body() id: string): Promise<Factory> {
     const deletedFactory = await this.factoryService.deleteFactory(id);
     return deletedFactory;
+  }
+
+  @Get('/genre/:id')
+  getFactoryGenres(@Param('id', ParseUUIDPipe) id: string): Promise<Genre[]> {
+    console.log('getFactoryGenres');
+
+    return this.factoryService.getFactoryGenres(id);
+  }
+  @Get('/feature/:id')
+  getFactoryFeature(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<Feature[]> {
+    console.log('getFactoryFeatures');
+
+    return this.factoryService.getFactoryFeatures(id);
   }
 }
