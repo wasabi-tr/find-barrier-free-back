@@ -24,41 +24,43 @@ model User {
 }
 
 model Factory {
-  id                            String                          @unique @default(uuid())
-  createdAt                     DateTime                        @default(now())
-  updatedAt                     DateTime                        @updatedAt
-  name                          String
-  zipcode                       String
-  prefecture                    String
-  city                          String
-  addressDetail                 String
-  lat                           Float
-  lng                           Float
-  tel                           String?
-  businessHours                 String?
-  holidays                      String?
-  siteUrl                       String?
-  imageUrl                      String[]                        @default([])
-  reviews                       Review[]
-  favoritedBy                   Favorite[]
-  genres                        GenreToFactory[]
-  factoryToAccessibilityFeature FactoryToAccessibilityFeature[]
+  id            String           @unique @default(uuid())
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  name          String
+  title         String
+  description   String
+  zipcode       String
+  prefecture    String
+  city          String
+  addressDetail String
+  lat           Float
+  lng           Float
+  tel           String?
+  businessHours String?
+  holidays      String?
+  siteUrl       String?
+  imageUrl      String[]         @default([])
+  reviews       Review[]
+  favoritedBy   Favorite[]
+  genres        FactoryGenre[]
+  features      FactoryFeature[]
 }
 
 model Genre {
-  id        String           @unique @default(uuid())
+  id        String         @unique @default(uuid())
   name      String // ジャンル名
-  factories GenreToFactory[]
+  factories FactoryGenre[]
 }
 
-model AccessibilityFeature {
-  id        String                          @unique @default(uuid())
+model Feature {
+  id        String           @unique @default(uuid())
   name      String // バリアフリーの特徴名
-  factories FactoryToAccessibilityFeature[]
+  factories FactoryFeature[]
 }
 
 // 中間テーブル
-model GenreToFactory {
+model FactoryGenre {
   genreId   String
   genre     Genre   @relation(fields: [genreId], references: [id], onDelete: Cascade)
   factoryId String
@@ -68,11 +70,11 @@ model GenreToFactory {
 }
 
 // 中間テーブル
-model FactoryToAccessibilityFeature {
+model FactoryFeature {
   featureId String
-  feature   AccessibilityFeature @relation(fields: [featureId], references: [id], onDelete: Cascade)
+  feature   Feature @relation(fields: [featureId], references: [id], onDelete: Cascade)
   factoryId String
-  factory   Factory              @relation(fields: [factoryId], references: [id], onDelete: Cascade)
+  factory   Factory @relation(fields: [factoryId], references: [id], onDelete: Cascade)
 
   @@id([featureId, factoryId])
 }

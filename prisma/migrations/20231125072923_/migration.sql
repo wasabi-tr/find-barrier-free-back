@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Factory" ALTER COLUMN "description" DROP DEFAULT,
+ALTER COLUMN "title" DROP DEFAULT;

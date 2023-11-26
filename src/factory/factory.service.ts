@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Factory } from '@prisma/client';
+import { Factory, Feature, Genre } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateFactoryDto } from './dto/create-factory.dto';
 import { ConfigService } from '@nestjs/config';
@@ -24,6 +24,8 @@ export class FactoryService {
     const factory = await this.prisma.factory.create({
       data: {
         name: dto.name,
+        title: dto.title,
+        description: dto.description,
         zipcode: dto.zipcode,
         prefecture: dto.prefecture,
         city: dto.city,
@@ -73,9 +75,29 @@ export class FactoryService {
       console.error('Fetch error:', error);
     }
   }
-  async createGenreToFactory(factoryId: string, genreIds: string[]) {
+  async getFactoryGenres(factoryId: string): Promise<Genre[]> {
+    const data = await this.prisma.factory.findMany({
+      where: {
+        id: factoryId,
+      },
+      include: {
+        genres: {
+          include: {
+            genre: true,
+          },
+        },
+      },
+    });
+
+    const genres = data
+      .map((item) => item.genres.map((genre) => genre.genre))
+      .flat();
+
+    return genres;
+  }
+  async createFactoryGenre(factoryId: string, genreIds: string[]) {
     for (const genreId of genreIds) {
-      await this.prisma.genreToFactory.create({
+      await this.prisma.factoryGenre.create({
         data: {
           factoryId,
           genreId,
@@ -83,15 +105,39 @@ export class FactoryService {
       });
     }
   }
+  async getFactoryFeatures(factoryId): Promise<Feature[]> {
+    const data = await this.prisma.factory.findMany({
+      where: {
+        id: factoryId,
+      },
+      include: {
+        features: {
+          include: {
+            feature: true,
+          },
+        },
+      },
+    });
+    const features = data
+      .map((item) => item.features.map((feature) => feature.feature))
+      .flat();
+    return features;
+  }
 
-  async createAccessibilityToFactory(factoryId: string, featureIds: string[]) {
+  async createFactoryFeature(factoryId: string, featureIds: string[]) {
     for (const featureId of featureIds) {
-      await this.prisma.factoryToAccessibilityFeature.create({
+      await this.prisma.factoryFeature.create({
         data: {
           factoryId,
           featureId,
         },
       });
     }
+  }
+  async getAllGenres(): Promise<Genre[]> {
+    return await this.prisma.genre.findMany();
+  }
+  async getAllFeature(): Promise<Feature[]> {
+    return await this.prisma.feature.findMany();
   }
 }

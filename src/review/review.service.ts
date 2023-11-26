@@ -22,7 +22,12 @@ export class ReviewService {
     return this.prisma.review.findMany();
   }
   async getReviewsByFactoryId(factoryId: string): Promise<Review[]> {
-    return this.prisma.review.findMany({ where: { factoryId: factoryId } });
+    return this.prisma.review.findMany({
+      where: { factoryId: factoryId },
+      include: {
+        user: true,
+      },
+    });
   }
   async createReview(dto: CreateReviewDto): Promise<Review> {
     const createData = {
