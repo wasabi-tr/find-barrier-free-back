@@ -11,16 +11,14 @@ datasource db {
 }
 
 model User {
-  id             String     @unique @default(uuid())
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
-  email          String     @unique
-  hashedPassword String
-  nickName       String?
-  description    String?
-  avatarUrl      String?
-  reviews        Review[]
-  favorites      Favorite[]
+  id          String     @unique @default(uuid())
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  nickName    String?
+  description String?
+  avatarUrl   String?
+  reviews     Review[]
+  favorites   Favorite[]
 }
 
 model Factory {
