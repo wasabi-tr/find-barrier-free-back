@@ -21,40 +21,40 @@ export class AuthController {
   getCsrfToken(@Req() req: Request): Csrf {
     return { csrfToken: req.csrfToken() };
   }
-  @Post('/signup')
-  signup(@Body() dto: AuthDto): Promise<Msg> {
-    return this.authService.signUp(dto);
-  }
+  // @Post('/signup')
+  // signup(@Body() dto: AuthDto): Promise<Msg> {
+  //   return this.authService.signUp(dto);
+  // }
 
-  @HttpCode(HttpStatus.OK)
-  @Post('/login')
-  async login(
-    @Body() dto: AuthDto,
-    @Res({ passthrough: true }) res: Response,
-  ): Promise<Msg> {
-    const jwt = await this.authService.login(dto);
-    //サーバーサイドからjwtをcookieに設定する
-    res.cookie('access_token', jwt.accessToken, {
-      httpOnly: true,
-      secure: true, // 本番環境ではtrue
-      sameSite: 'none',
-      path: '/',
-    });
-    return { message: 'ok' };
-  }
+  // @HttpCode(HttpStatus.OK)
+  // @Post('/login')
+  // async login(
+  //   @Body() dto: AuthDto,
+  //   @Res({ passthrough: true }) res: Response,
+  // ): Promise<Msg> {
+  //   const jwt = await this.authService.login(dto);
+  //   //サーバーサイドからjwtをcookieに設定する
+  //   res.cookie('access_token', jwt.accessToken, {
+  //     httpOnly: true,
+  //     secure: true, // 本番環境ではtrue
+  //     sameSite: 'none',
+  //     path: '/',
+  //   });
+  //   return { message: 'ok' };
+  // }
 
-  @HttpCode(HttpStatus.OK)
-  @Post('/logout')
-  async logout(
-    @Req() req: Request,
-    @Res({ passthrough: true }) res: Response,
-  ): Promise<Msg> {
-    res.cookie('access_token', '', {
-      httpOnly: true,
-      secure: true, // 本番環境ではtrue
-      sameSite: 'none',
-      path: '/',
-    });
-    return { message: 'ok' };
-  }
+  // @HttpCode(HttpStatus.OK)
+  // @Post('/logout')
+  // async logout(
+  //   @Req() req: Request,
+  //   @Res({ passthrough: true }) res: Response,
+  // ): Promise<Msg> {
+  //   res.cookie('access_token', '', {
+  //     httpOnly: true,
+  //     secure: true, // 本番環境ではtrue
+  //     sameSite: 'none',
+  //     path: '/',
+  //   });
+  //   return { message: 'ok' };
+  // }
 }

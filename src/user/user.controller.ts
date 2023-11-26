@@ -1,24 +1,31 @@
-import { Body, Controller, Get, Patch, Req, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import {
+  Body,
+  Controller,
+  Get,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { Request } from 'express';
 import { User } from '@prisma/client';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
+import { AuthGuard } from 'src/auth/auth.guard';
 
-@UseGuards(AuthGuard('jwt')) //userのエンドポイントにjwtの認証を設定することができる
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
-  @Get()
-  getLoginUser(@Req() req: Request): Omit<User, 'hashedPassword'> {
-    return req.user;
+
+  @Post()
+  createUser(@Body() dto: CreateUserDto): Promise<User> {
+    return this.userService.createUser(dto);
   }
 
+  @UseGuards(AuthGuard) //userのエンドポイントにjwtの認証を設定することができる
   @Patch()
-  updateUser(
-    @Req() req: Request,
-    @Body() dto: UpdateUserDto,
-  ): Promise<Omit<User, 'hashedPassword'>> {
-    return this.userService.updateUser(req.user.id, dto);
+  updateUser(@Body() dto: UpdateUserDto): Promise<User> {
+    return this.userService.updateUser(dto);
   }
 }
