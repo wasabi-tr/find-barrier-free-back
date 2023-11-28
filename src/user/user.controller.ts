@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Patch,
   Post,
   Req,
@@ -13,6 +14,7 @@ import { User } from '@prisma/client';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { GetUserDto } from './dto/get-user.dto';
 
 @Controller('user')
 export class UserController {
@@ -23,6 +25,11 @@ export class UserController {
     return this.userService.createUser(dto);
   }
 
+  @UseGuards(AuthGuard) //userのエンドポイントにjwtの認証を設定することができる
+  @Get(':id')
+  getUser(@Param() dto: GetUserDto): Promise<User> {
+    return this.userService.getUser(dto);
+  }
   @UseGuards(AuthGuard) //userのエンドポイントにjwtの認証を設定することができる
   @Patch()
   updateUser(@Body() dto: UpdateUserDto): Promise<User> {
