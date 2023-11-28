@@ -18,6 +18,18 @@ export class FactoryService {
   async getFactory(id: string): Promise<Factory> {
     return this.prisma.factory.findUnique({ where: { id } });
   }
+  async getFactoryByFavorite(userId: string): Promise<Factory[]> {
+    const factories = await this.prisma.factory.findMany({
+      where: {
+        favoritedBy: {
+          some: {
+            userId,
+          },
+        },
+      },
+    });
+    return factories;
+  }
   async createFactory(dto: CreateFactoryDto): Promise<Factory> {
     const address = `${dto.prefecture}${dto.city}${dto.addressDetail}`;
     const location = await this.getLocation(address);
