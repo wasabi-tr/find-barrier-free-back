@@ -1,4 +1,8 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Favorite } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -11,6 +15,20 @@ export class FavoriteService {
     private prisma: PrismaService,
     private readonly config: ConfigService,
   ) {}
+
+  async getFavorite(dto: FavoriteDto): Promise<Favorite> {
+    const favorite = await this.prisma.favorite.findFirst({
+      where: {
+        userId: dto.userId,
+        factoryId: dto.factoryId,
+      },
+    });
+
+    if (!favorite) {
+      throw new NotFoundException('not found');
+    }
+    return favorite;
+  }
 
   async registerFavorite(dto: FavoriteDto): Promise<Msg> {
     try {
