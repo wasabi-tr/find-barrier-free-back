@@ -3,12 +3,14 @@ import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Param,
   ParseUUIDPipe,
   Patch,
   Post,
   Query,
   Req,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { Factory, Feature, Genre } from '@prisma/client';
@@ -33,6 +35,21 @@ export class FactoryController {
   getAllFeature(): Promise<Genre[]> {
     console.log('getFactoryAccessibility');
     return this.factoryService.getAllFeature();
+  }
+  @UseGuards(AuthGuard)
+  @Get('/favorite')
+  async getFactoryByFavorite(
+    @Query('userId') userId: string,
+    @Res() response,
+  ): Promise<Factory[]> {
+    try {
+      const factories = await this.factoryService.getFactoryByFavorite(userId);
+      return response.status(HttpStatus.OK).json(factories);
+    } catch (error) {
+      return response
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: error.message });
+    }
   }
 
   @Get(':id')
