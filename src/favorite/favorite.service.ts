@@ -38,11 +38,9 @@ export class FavoriteService {
         },
       });
     } catch (error) {
-      throw new ForbiddenException(
-        'ログインしてからもう一度登録をしてください。',
-      );
+      throw new ForbiddenException('エラーが発生しました。');
     }
-    return { message: 'ok' };
+    return { message: 'created' };
   }
   async deleteFavorite(dto: FavoriteDto): Promise<Msg> {
     try {
@@ -54,11 +52,9 @@ export class FavoriteService {
           },
         },
       });
-      return { message: 'ok' };
+      return { message: 'deleted' };
     } catch (error) {
-      throw new ForbiddenException(
-        'ログインしてからもう一度登録解除をしてください。',
-      );
+      throw new ForbiddenException('エラーが発生しました。');
     }
   }
 }
