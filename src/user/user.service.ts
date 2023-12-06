@@ -21,6 +21,7 @@ export class UserService {
       data: {
         id: dto.id,
         nickName: dto.nickName,
+        slug: dto.id,
       },
     });
     return user;
