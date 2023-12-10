@@ -9,4 +9,12 @@ export class UpdateUserDto {
   @IsString()
   @IsOptional()
   description?: string;
+
+  @IsString()
+  @IsOptional()
+  slug?: string;
+
+  @IsString()
+  @IsOptional()
+  avatarUrl?: string;
 }
