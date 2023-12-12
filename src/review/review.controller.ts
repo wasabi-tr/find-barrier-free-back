@@ -30,11 +30,16 @@ export class ReviewController {
     return this.reviewService.getReviews();
   }
 
-  @Get(':factoryId')
+  @Get('factory/:factoryId')
   getReviewsByFactoryId(
     @Param('factoryId', ParseUUIDPipe) factoryId: string,
   ): Promise<Review[]> {
     return this.reviewService.getReviewsByFactoryId(factoryId);
+  }
+
+  @Get('user/:userId')
+  getReviewsByUserId(@Param('userId') userId: string): Promise<Review[]> {
+    return this.reviewService.getReviewsByUserId(userId);
   }
 
   @HttpCode(HttpStatus.OK)

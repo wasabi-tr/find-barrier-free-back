@@ -24,16 +24,20 @@ import { AuthGuard } from 'src/auth/auth.guard';
 @Controller('factory')
 export class FactoryController {
   constructor(private readonly factoryService: FactoryService) {}
-
+  @Get()
+  getFactories(): Promise<Factory[]> {
+    console.log('getFactories');
+    return this.factoryService.getFactories();
+  }
   @Get('/genres')
   getAllGenres(): Promise<Genre[]> {
-    console.log('getFactoryGenres');
+    console.log('getAllGenres');
     return this.factoryService.getAllGenres();
   }
 
   @Get('/features')
   getAllFeature(): Promise<Genre[]> {
-    console.log('getFactoryAccessibility');
+    console.log('getAllFeature');
     return this.factoryService.getAllFeature();
   }
   @UseGuards(AuthGuard)
@@ -57,12 +61,6 @@ export class FactoryController {
     console.log('getFactory');
 
     return this.factoryService.getFactory(id);
-  }
-
-  @Get()
-  getFactories(): Promise<Factory[]> {
-    console.log('getFactories');
-    return this.factoryService.getFactories();
   }
 
   @UseGuards(AuthGuard)

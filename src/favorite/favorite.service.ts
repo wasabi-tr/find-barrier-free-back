@@ -29,6 +29,25 @@ export class FavoriteService {
     }
     return favorite;
   }
+  async getAllFavoriteByUserId({
+    userId,
+  }: {
+    userId: string;
+  }): Promise<Favorite[]> {
+    const favorite = await this.prisma.favorite.findMany({
+      where: {
+        userId: userId,
+      },
+      include: {
+        factory: true,
+      },
+    });
+
+    if (!favorite) {
+      throw new NotFoundException('not found');
+    }
+    return favorite;
+  }
 
   async registerFavorite(dto: FavoriteDto): Promise<Msg> {
     try {

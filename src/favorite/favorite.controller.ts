@@ -24,6 +24,12 @@ export class FavoriteController {
   ): Promise<Favorite> {
     return this.favoriteService.getFavorite({ userId, factoryId });
   }
+  @Get('/user')
+  async getAllFavoritesByUserId(
+    @Query('userId') userId: string,
+  ): Promise<Favorite[]> {
+    return this.favoriteService.getAllFavoriteByUserId({ userId });
+  }
 
   @Post()
   async registerFavorite(@Body() dto: FavoriteDto): Promise<Msg> {
