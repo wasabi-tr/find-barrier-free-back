@@ -13,10 +13,37 @@ export class FactoryService {
     private readonly config: ConfigService,
   ) {}
   async getFactories(): Promise<Factory[]> {
-    return this.prisma.factory.findMany();
+    return this.prisma.factory.findMany({
+      include: {
+        genres: {
+          include: {
+            genre: true,
+          },
+        },
+        features: {
+          include: {
+            feature: true,
+          },
+        },
+      },
+    });
   }
   async getFactory(id: string): Promise<Factory> {
-    return this.prisma.factory.findUnique({ where: { id } });
+    return this.prisma.factory.findUnique({
+      where: { id },
+      include: {
+        genres: {
+          include: {
+            genre: true,
+          },
+        },
+        features: {
+          include: {
+            feature: true,
+          },
+        },
+      },
+    });
   }
   async getFactoryByFavorite(userId: string): Promise<Factory[]> {
     const factories = await this.prisma.factory.findMany({
