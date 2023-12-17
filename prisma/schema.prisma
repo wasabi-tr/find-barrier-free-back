@@ -20,6 +20,7 @@ model User {
   avatarUrl   String?
   reviews     Review[]
   favorites   Favorite[]
+  Factory     Factory[]
 }
 
 model Factory {
@@ -44,6 +45,8 @@ model Factory {
   favoritedBy   Favorite[]
   genres        FactoryGenre[]
   features      FactoryFeature[]
+  userId        String
+  user          User             @relation(fields: [userId], references: [id])
 }
 
 model Genre {

@@ -62,6 +62,7 @@ export class FactoryService {
     const location = await this.getLocation(address);
     const factory = await this.prisma.factory.create({
       data: {
+        userId: dto.userId,
         name: dto.name,
         title: dto.title,
         description: dto.description,
