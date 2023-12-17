@@ -9,8 +9,6 @@ import { GetUserDto } from './dto/get-user.dto';
 export class UserService {
   constructor(private prisma: PrismaService) {}
   async getUser(dto: GetUserDto): Promise<User> {
-    console.log(dto.id);
-
     const user = await this.prisma.user.findUnique({
       where: { id: dto.id },
     });

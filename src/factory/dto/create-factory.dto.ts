@@ -9,6 +9,10 @@ import {
 export class CreateFactoryDto {
   @IsNotEmpty()
   @IsString()
+  userId: string;
+
+  @IsNotEmpty()
+  @IsString()
   name: string;
   @IsNotEmpty()
   @IsString()
