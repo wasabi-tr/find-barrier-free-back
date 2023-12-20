@@ -9,6 +9,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
   Req,
   Res,
   UseGuards,
@@ -16,10 +17,10 @@ import {
 import { ReviewService } from './review.service';
 import { Review } from '@prisma/client';
 import { CreateReviewDto } from './dto/create-review.dto';
-import { AuthGuard } from '@nestjs/passport';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { Request } from 'express';
 import { DeleteReviewDto } from './dto/delete-review.dto';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('review')
 export class ReviewController {
@@ -30,27 +31,38 @@ export class ReviewController {
     return this.reviewService.getReviews();
   }
 
-  @Get('factory/:factoryId')
+  @Get('/factory/:factoryId')
   getReviewsByFactoryId(
     @Param('factoryId', ParseUUIDPipe) factoryId: string,
   ): Promise<Review[]> {
     return this.reviewService.getReviewsByFactoryId(factoryId);
   }
 
-  @Get('user/:userId')
-  getReviewsByUserId(@Param('userId') userId: string): Promise<Review[]> {
+  // @UseGuards(AuthGuard)
+  @Get('/user/:userId')
+  getReviewByUserId(@Param('userId') userId: string): Promise<Review[]> {
     return this.reviewService.getReviewsByUserId(userId);
   }
+  // @UseGuards(AuthGuard)
+  @Get('/user-and-factory')
+  getReviewsByUserIdAndFactoryId(
+    @Query('userId') userId: string,
+    @Query('factoryId') factoryId: string,
+  ): Promise<Review> {
+    console.log('getReviewByUserIdAndFactoryId');
+    return this.reviewService.getReviewByUserIdAndFactoryId({
+      userId,
+      factoryId,
+    });
+  }
 
-  @HttpCode(HttpStatus.OK)
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard)
   @Post('/create')
   createReview(@Body() dto: CreateReviewDto): Promise<Review> {
     return this.reviewService.createReview(dto);
   }
 
-  @HttpCode(HttpStatus.OK)
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard)
   @Patch('/update')
   updateReview(
     @Req() req: Request,
@@ -59,8 +71,7 @@ export class ReviewController {
     return this.reviewService.updateReview(req.user.id, dto);
   }
 
-  @HttpCode(HttpStatus.OK)
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard)
   @Delete('/delete')
   deleteReview(
     @Req() req: Request,

@@ -37,7 +37,34 @@ export class ReviewService {
       },
     });
   }
+  async getReviewByUserIdAndFactoryId({
+    userId,
+    factoryId,
+  }: {
+    userId: string;
+    factoryId: string;
+  }): Promise<Review> {
+    console.log('getReviewByUserIdAndFactoryId');
+
+    return this.prisma.review.findFirst({
+      where: { userId, factoryId },
+      include: {
+        factory: true,
+      },
+    });
+  }
   async createReview(dto: CreateReviewDto): Promise<Review> {
+    const existingReview = await this.prisma.review.findFirst({
+      where: {
+        userId: dto.userId,
+        factoryId: dto.factoryId,
+      },
+    });
+
+    if (existingReview) {
+      throw new ForbiddenException('すでに口コミを登録しています。');
+    }
+
     const createData = {
       data: {
         title: dto.title,
