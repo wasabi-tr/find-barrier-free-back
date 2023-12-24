@@ -101,4 +101,6 @@ model Review {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   factoryId String
   factory   Factory  @relation(fields: [factoryId], references: [id])
+
+  @@unique([userId, factoryId], name: "userId_factoryId")
 }

@@ -56,6 +56,21 @@ export class FactoryController {
     }
   }
 
+  @Get('/user')
+  async getFactoryByUser(
+    @Query('userId') userId: string,
+    @Res() response,
+  ): Promise<Factory[]> {
+    try {
+      const factories = await this.factoryService.getFactoryByUser(userId);
+      return response.status(HttpStatus.OK).json(factories);
+    } catch (error) {
+      return response
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: error.message });
+    }
+  }
+
   @Get(':id')
   getFactory(@Param('id', ParseUUIDPipe) id: string): Promise<Factory> {
     console.log('getFactory');

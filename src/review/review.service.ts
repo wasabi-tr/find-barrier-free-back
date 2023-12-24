@@ -45,28 +45,34 @@ export class ReviewService {
     factoryId: string;
   }): Promise<Review> {
     console.log('getReviewByUserIdAndFactoryId');
-
-    return this.prisma.review.findFirst({
+    const review = await this.prisma.review.findFirst({
       where: { userId, factoryId },
       include: {
         factory: true,
       },
     });
+    if (!review) {
+      throw new NotFoundException('レビューはありません。');
+    }
+    return review;
   }
   async createReview(dto: CreateReviewDto): Promise<Review> {
-    const existingReview = await this.prisma.review.findFirst({
+    return this.prisma.review.upsert({
       where: {
-        userId: dto.userId,
-        factoryId: dto.factoryId,
+        // レビューを一意に識別するフィールド
+        userId_factoryId: {
+          userId: dto.userId,
+          factoryId: dto.factoryId,
+        },
       },
-    });
-
-    if (existingReview) {
-      throw new ForbiddenException('すでに口コミを登録しています。');
-    }
-
-    const createData = {
-      data: {
+      update: {
+        // 更新するフィールド
+        title: dto.title,
+        comment: dto.comment,
+        imageUrl: dto.imageUrl,
+      },
+      create: {
+        // 新しいレビューを作成する場合のデータ
         title: dto.title,
         comment: dto.comment,
         user: {
@@ -81,8 +87,7 @@ export class ReviewService {
           },
         },
       },
-    };
-    return this.prisma.review.create(createData);
+    });
   }
 
   async updateReview(
@@ -115,25 +120,22 @@ export class ReviewService {
       ...updateData,
     });
   }
-  async deleteReview(
-    currentUserId: string,
-    dto: DeleteReviewDto,
-  ): Promise<Review> {
+  async deleteReview(dto: DeleteReviewDto): Promise<void> {
     const review = await this.prisma.review.findUnique({
       where: { id: dto.id },
     });
     // レビューが存在しない場合は例外を投げます。
     if (!review) {
-      throw new NotFoundException('Review not found');
+      throw new NotFoundException('口コミは登録されていません。');
     }
     // 現在のユーザーIDとレビューのユーザーIDを比較します。
-    if (review.userId !== currentUserId) {
+    if (review.userId !== dto.userId) {
       throw new ForbiddenException(
-        'You do not have permission to delete this review',
+        '削除しようとしている口コミは他のユーザーの口コミです。',
       );
     }
 
-    return this.prisma.review.delete({
+    await this.prisma.review.delete({
       where: { id: dto.id },
     });
   }

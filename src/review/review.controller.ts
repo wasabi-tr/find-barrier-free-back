@@ -76,7 +76,7 @@ export class ReviewController {
   deleteReview(
     @Req() req: Request,
     @Body() dto: DeleteReviewDto,
-  ): Promise<Review> {
-    return this.reviewService.deleteReview(req.user.id, dto);
+  ): Promise<void> {
+    return this.reviewService.deleteReview(dto);
   }
 }
