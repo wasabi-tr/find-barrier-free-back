@@ -3,4 +3,7 @@ export class DeleteReviewDto {
   @IsNotEmpty()
   @IsString()
   id: string;
+  @IsNotEmpty()
+  @IsString()
+  userId: string;
 }

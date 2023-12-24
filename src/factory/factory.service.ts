@@ -57,6 +57,14 @@ export class FactoryService {
     });
     return factories;
   }
+  async getFactoryByUser(userId: string): Promise<Factory[]> {
+    const factories = await this.prisma.factory.findMany({
+      where: {
+        userId,
+      },
+    });
+    return factories;
+  }
   async createFactory(dto: CreateFactoryDto): Promise<Factory> {
     const address = `${dto.prefecture}${dto.city}${dto.addressDetail}`;
     const location = await this.getLocation(address);
