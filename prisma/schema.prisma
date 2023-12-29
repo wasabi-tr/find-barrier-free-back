@@ -24,40 +24,50 @@ model User {
 }
 
 model Factory {
-  id            String           @unique @default(uuid())
-  createdAt     DateTime         @default(now())
-  updatedAt     DateTime         @updatedAt
-  name          String
-  title         String
-  description   String
-  zipcode       String
-  prefecture    String
-  city          String
-  addressDetail String
-  lat           Float
-  lng           Float
-  tel           String?
-  businessHours String?
-  holidays      String?
-  siteUrl       String?
-  imageUrl      String[]         @default([])
-  reviews       Review[]
-  favoritedBy   Favorite[]
-  genres        FactoryGenre[]
-  features      FactoryFeature[]
-  userId        String
-  user          User             @relation(fields: [userId], references: [id])
+  id             String           @unique @default(uuid())
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  name           String
+  title          String
+  description    String
+  zipcode        String
+  prefecture     Prefecture?      @relation(fields: [prefectureSlug], references: [slug])
+  prefectureSlug String?
+  city           String
+  addressDetail  String
+  lat            Float
+  lng            Float
+  tel            String?
+  businessHours  String?
+  holidays       String?
+  siteUrl        String?
+  imageUrl       String[]         @default([])
+  reviews        Review[]
+  favoritedBy    Favorite[]
+  genres         FactoryGenre[]
+  features       FactoryFeature[]
+  userId         String
+  user           User             @relation(fields: [userId], references: [id])
+}
+
+model Prefecture {
+  id      String    @unique @default(uuid())
+  name    String    @unique
+  slug    String    @unique
+  factory Factory[]
 }
 
 model Genre {
   id        String         @unique @default(uuid())
   name      String // ジャンル名
+  slug      String?        @unique
   factories FactoryGenre[]
 }
 
 model Feature {
   id        String           @unique @default(uuid())
   name      String // バリアフリーの特徴名
+  slug      String?          @unique
   factories FactoryFeature[]
 }
 

@@ -13,7 +13,7 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { Factory, Feature, Genre } from '@prisma/client';
+import { Factory, Feature, Genre, Prefecture } from '@prisma/client';
 import { FactoryService } from './factory.service';
 import { Request } from 'express';
 import { CreateFactoryDto } from './dto/create-factory.dto';
@@ -24,11 +24,13 @@ import { AuthGuard } from 'src/auth/auth.guard';
 @Controller('factory')
 export class FactoryController {
   constructor(private readonly factoryService: FactoryService) {}
+
   @Get()
   getFactories(): Promise<Factory[]> {
     console.log('getFactories');
     return this.factoryService.getFactories();
   }
+
   @Get('/genres')
   getAllGenres(): Promise<Genre[]> {
     console.log('getAllGenres');
@@ -36,10 +38,17 @@ export class FactoryController {
   }
 
   @Get('/features')
-  getAllFeature(): Promise<Genre[]> {
+  getAllFeature(): Promise<Feature[]> {
     console.log('getAllFeature');
     return this.factoryService.getAllFeature();
   }
+
+  @Get('/prefectures')
+  getAllPrefecture(): Promise<Prefecture[]> {
+    console.log('getAllPrefectures');
+    return this.factoryService.getAllPrefecture();
+  }
+
   @UseGuards(AuthGuard)
   @Get('/favorite')
   async getFactoryByFavorite(
@@ -109,6 +118,7 @@ export class FactoryController {
 
     return this.factoryService.getFactoryGenres(id);
   }
+
   @Get('/feature/:id')
   getFactoryFeature(
     @Param('id', ParseUUIDPipe) id: string,
