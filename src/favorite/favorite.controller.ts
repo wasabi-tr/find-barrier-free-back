@@ -17,6 +17,7 @@ import { Favorite } from '@prisma/client';
 @UseGuards(AuthGuard)
 export class FavoriteController {
   constructor(private readonly favoriteService: FavoriteService) {}
+
   @Get()
   async getFavorites(
     @Query('userId') userId: string,
@@ -24,6 +25,7 @@ export class FavoriteController {
   ): Promise<Favorite> {
     return this.favoriteService.getFavorite({ userId, factoryId });
   }
+
   @Get('/user')
   async getAllFavoritesByUserId(
     @Query('userId') userId: string,

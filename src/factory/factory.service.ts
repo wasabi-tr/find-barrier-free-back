@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Factory, Feature, Genre } from '@prisma/client';
+import { Factory, Feature, Genre, Prefecture } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateFactoryDto } from './dto/create-factory.dto';
 import { ConfigService } from '@nestjs/config';
@@ -25,6 +25,7 @@ export class FactoryService {
             feature: true,
           },
         },
+        prefecture: true,
       },
     });
   }
@@ -42,6 +43,7 @@ export class FactoryService {
             feature: true,
           },
         },
+        prefecture: true,
       },
     });
   }
@@ -75,7 +77,7 @@ export class FactoryService {
         title: dto.title,
         description: dto.description,
         zipcode: dto.zipcode,
-        prefecture: dto.prefecture,
+        prefectureSlug: dto.prefecture,
         city: dto.city,
         addressDetail: dto.addressDetail,
         lat: location.lat,
@@ -95,7 +97,7 @@ export class FactoryService {
       data: {
         name: dto.name,
         zipcode: dto.zipcode,
-        prefecture: dto.prefecture,
+        prefectureSlug: dto.prefecture,
         city: dto.city,
         addressDetail: dto.addressDetail,
         tel: dto.tel,
@@ -187,5 +189,8 @@ export class FactoryService {
   }
   async getAllFeature(): Promise<Feature[]> {
     return await this.prisma.feature.findMany();
+  }
+  async getAllPrefecture(): Promise<Prefecture[]> {
+    return await this.prisma.prefecture.findMany();
   }
 }
