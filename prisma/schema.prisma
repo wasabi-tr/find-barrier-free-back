@@ -20,7 +20,7 @@ model User {
   avatarUrl   String?
   reviews     Review[]
   favorites   Favorite[]
-  Factory     Factory[]
+  factory     Factory[]
 }
 
 model Factory {
@@ -31,8 +31,8 @@ model Factory {
   title          String
   description    String
   zipcode        String
-  prefecture     Prefecture?      @relation(fields: [prefectureSlug], references: [slug])
-  prefectureSlug String?
+  prefecture     Prefecture       @relation(fields: [prefectureSlug], references: [slug])
+  prefectureSlug String
   city           String
   addressDetail  String
   lat            Float

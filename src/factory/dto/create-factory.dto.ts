@@ -1,11 +1,4 @@
-import {
-  IsArray,
-  IsEmail,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  MinLength,
-} from 'class-validator';
+import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 export class CreateFactoryDto {
   @IsNotEmpty()
   @IsString()
@@ -59,7 +52,7 @@ export class CreateFactoryDto {
 
   @IsOptional()
   @IsArray()
-  genresIds?: string[];
+  genreIds?: string[];
 
   @IsOptional()
   @IsArray()

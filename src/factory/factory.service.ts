@@ -87,6 +87,20 @@ export class FactoryService {
         holidays: dto.holidays,
         siteUrl: dto.siteUrl,
         imageUrl: dto.imageUrl,
+        genres: {
+          createMany: {
+            data: dto.genreIds.map((id) => ({
+              genreId: id,
+            })),
+          },
+        },
+        features: {
+          createMany: {
+            data: dto.featureIds.map((id) => ({
+              featureId: id,
+            })),
+          },
+        },
       },
     });
     return factory;
