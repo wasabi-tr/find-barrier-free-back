@@ -110,7 +110,7 @@ model Review {
   imageUrl  String[] @default([])
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   factoryId String
-  factory   Factory  @relation(fields: [factoryId], references: [id])
+  factory   Factory  @relation(fields: [factoryId], references: [id], onDelete: Cascade)
 
   @@unique([userId, factoryId], name: "userId_factoryId")
 }
