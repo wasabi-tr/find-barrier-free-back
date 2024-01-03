@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Factory, Feature, Genre, Prefecture } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateFactoryDto } from './dto/create-factory.dto';
@@ -26,11 +26,12 @@ export class FactoryService {
           },
         },
         prefecture: true,
+        reviews: true,
       },
     });
   }
   async getFactory(id: string): Promise<Factory> {
-    return this.prisma.factory.findUnique({
+    const factory = await this.prisma.factory.findUnique({
       where: { id },
       include: {
         genres: {
@@ -44,8 +45,14 @@ export class FactoryService {
           },
         },
         prefecture: true,
+        reviews: true,
       },
     });
+    if (!factory) {
+      throw new NotFoundException(`Factory with ID ${id} not found`);
+    }
+
+    return factory;
   }
   async getFactoryByFavorite(userId: string): Promise<Factory[]> {
     const factories = await this.prisma.factory.findMany({
