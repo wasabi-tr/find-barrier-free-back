@@ -26,7 +26,11 @@ export class FactoryService {
           },
         },
         prefecture: true,
-        reviews: true,
+        reviews: {
+          include: {
+            user: true,
+          },
+        },
       },
     });
   }
@@ -45,7 +49,11 @@ export class FactoryService {
           },
         },
         prefecture: true,
-        reviews: true,
+        reviews: {
+          include: {
+            user: true,
+          },
+        },
       },
     });
     if (!factory) {
@@ -70,6 +78,9 @@ export class FactoryService {
     const factories = await this.prisma.factory.findMany({
       where: {
         userId,
+      },
+      include: {
+        prefecture: true,
       },
     });
     return factories;
