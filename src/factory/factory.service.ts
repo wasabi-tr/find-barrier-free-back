@@ -223,6 +223,6 @@ export class FactoryService {
     return await this.prisma.feature.findMany();
   }
   async getAllPrefecture(): Promise<Prefecture[]> {
-    return await this.prisma.prefecture.findMany();
+    return await this.prisma.prefecture.findMany({ include: { region: true } });
   }
 }
